@@ -1,0 +1,5 @@
+sqlalchemy
+Flask-Migrate
+Flask
+streamlit==1.23.1
+pandas
