@@ -11,12 +11,17 @@ from store.crud import (
     update_motocycle,
 )
 
+# Definición de tabs en la application
 tab1, tab2, tab3 = st.tabs(["Register", "Login", "Motocycle"])
 
+# Variable de estado que posteriormente cambiará a True
+# cuando se haya registrado o logueado el usuario
 if "login" not in st.session_state:
     st.session_state.login = False
 
 with tab1:
+    """Tab de Registro de un usuario"""
+
     st.header("Registro")
 
     name = st.text_input("Nombre", key="name")
@@ -47,6 +52,8 @@ with tab1:
         st.write("Registrado!")
 
 with tab2:
+    """Tab de Login de un usuario existente"""
+
     st.header("Login")
     email = st.text_input("Email", key="login_email")
     password = st.text_input("Password", key="login_password", type="password")
@@ -59,8 +66,11 @@ with tab2:
             st.write("No logueado. Verifique su email/password")
 
 with tab3:
+    """Tab de Listado, Creacion, Actualizacion y Borrado de motocicletas"""
+
     st.header("Motocicletas")
     if st.session_state.login:
+        # Listado de motocicletas
         data = get_motocycles(st.session_state.email)
         num_motocycles = len(data["uuid"])
 
@@ -107,13 +117,15 @@ with tab3:
                     "price": row["Precio"],
                     "kind": row["Tipo"],
                 }
-                # print(row)
                 if row["borrar?"]:
+                    # borrado de motocicletas
                     delete_motocycle(row["uuid"])
                 else:
+                    # update de motocicletas
                     if row["uuid"]:
                         update_motocycle(row["uuid"], **motocycle_update)
                     else:
+                        # creacion de motocicletas
                         motocycle_create = {
                             "uuid": str(uuid.uuid4()),
                             **motocycle_update,

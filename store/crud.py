@@ -5,11 +5,13 @@ import pandas as pd
 
 
 def get_user(email: str):
+    """Funcion para obtener un usuario en base al email"""
     with Session(connect()) as db:
         return db.query(UserModel).filter(UserModel.email == email).first()
 
 
 def create_user(**kwargs):
+    """Funcion para crear un usuario"""
     with Session(connect()) as db:
         user = UserModel(**kwargs)
         db.add(user)
@@ -17,6 +19,7 @@ def create_user(**kwargs):
 
 
 def check_user(email: str, password: str):
+    """Funcion para verificar el email y password en el login"""
     with Session(connect()) as db:
         return (
             db.query(UserModel)
@@ -26,6 +29,7 @@ def check_user(email: str, password: str):
 
 
 def create_motocycle(user_email: str, **kwargs):
+    """Funcion para crear una motocicleta para un usuario"""
     with Session(connect()) as db:
         user = get_user(email=user_email)
         if not user:
@@ -37,6 +41,7 @@ def create_motocycle(user_email: str, **kwargs):
 
 
 def get_motocycles(user_email: str):
+    """Funcion para obtener motocicletas en base al email de un usuario"""
     user = get_user(email=user_email)
     if not user:
         raise ValueError("User not defined")
@@ -66,6 +71,7 @@ def get_motocycles(user_email: str):
 
 
 def delete_motocycle(motocycle_uuid: str) -> bool:
+    """Funcion para borrar una motocicleta"""
     with Session(connect()) as db:
         motocycle = (
             db.query(MotocycleModel)
@@ -82,6 +88,7 @@ def delete_motocycle(motocycle_uuid: str) -> bool:
 
 
 def update_motocycle(motocycle_uuid: str, **kwargs):
+    """Funcion para actualizar una motocicleta"""
     with Session(connect()) as db:
         db.query(MotocycleModel).filter(
             MotocycleModel.uuid == motocycle_uuid

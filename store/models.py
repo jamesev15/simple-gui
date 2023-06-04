@@ -8,7 +8,7 @@ from flask_migrate import Migrate, upgrade
 app = Flask(__name__)
 
 db_path = join(dirname(abspath(__file__)), "instance/", "app.db")
-DATABASE_URL = f"sqlite:///{db_path}"
+DATABASE_URL = f"sqlite:///{db_path}"  # Ubicación de la base de datos
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 
@@ -22,6 +22,8 @@ class BaseModel(db.Model):
 
 
 class UserModel(BaseModel):
+    """Tabla de usuarios"""
+
     __tablename__ = "User"
 
     name = db.Column(db.String)
@@ -38,6 +40,8 @@ class UserModel(BaseModel):
 
 
 class MotocycleModel(BaseModel):
+    """Tabla de motocicletas"""
+
     __tablename__ = "Motocycle"
 
     brand = db.Column(db.String)
@@ -46,6 +50,7 @@ class MotocycleModel(BaseModel):
     price = db.Column(db.String)
     kind = db.Column(db.String)
 
+    # Relacion de 1 a N entre la tabla usarios y la tabla motocicletas
     user_id = db.Column(
         db.String,
         db.ForeignKey(
@@ -58,5 +63,6 @@ class MotocycleModel(BaseModel):
 
 
 def run_migrations():
+    """Funcion para ejecutar las migraciones creadas por alembic"""
     with app.app_context():
         upgrade(directory=join(dirname(abspath(__file__)), "migrations/"))
