@@ -20,7 +20,7 @@ if "login" not in st.session_state:
     st.session_state.login = False
 
 with tab1:
-    """Tab de Registro de un usuario"""
+    # Tab de Registro de un usuario
 
     st.header("Registro")
 
@@ -52,7 +52,7 @@ with tab1:
         st.write("Registrado!")
 
 with tab2:
-    """Tab de Login de un usuario existente"""
+    # Tab de Login de un usuario existente
 
     st.header("Login")
     email = st.text_input("Email", key="login_email")
@@ -66,20 +66,30 @@ with tab2:
             st.write("No logueado. Verifique su email/password")
 
 with tab3:
-    """Tab de Listado, Creacion, Actualizacion y Borrado de motocicletas"""
+    # Tab de Listado, Creacion, Actualizacion y Borrado de motocicletas
 
     st.header("Motocicletas")
     if st.session_state.login:
         # Listado de motocicletas
         data = get_motocycles(st.session_state.email)
         num_motocycles = len(data["uuid"])
+        datos = {
+            **{
+                "borrar?": [False] * num_motocycles
+                if num_motocycles > 0
+                else []
+            },
+            **data,
+        }
+        # Populacion de una fila para evitar errores de renderizado
+        if num_motocycles == 0:
+            for k, v in datos.items():
+                if k == "borrar?":
+                    datos[k].append(False)
+                else:
+                    datos[k].append("")
 
-        df = pd.DataFrame(
-            {
-                **{"borrar?": [False] * num_motocycles},
-                **data,
-            }
-        )
+        df = pd.DataFrame(datos)
         edited_df = st.data_editor(
             df,
             column_config={
@@ -87,6 +97,7 @@ with tab3:
                     "borrar?",
                     help="Borrar?",
                     default=False,
+                    required=False,
                 ),
                 "uuid": "Motocycle id",
                 "Marca": "Marca",
